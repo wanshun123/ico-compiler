@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ICO Contract Generator</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+  <script src="./app.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+</head>
+<body>
+
+<h1>ICO Contract Generator v1.0</h1>
+
+<div id="whichNetwork"></div>
+
+<br>
+
+<div id="instructions"></div>
+
+<hr>
+
+<div class="form-group">
+  <textarea class="form-control" rows="1" id="symbol" placeholder="Symbol (of type string)" style="overflow:auto"></textarea>
+</div>
+<div class="form-group">
+  <textarea class="form-control" rows="1" id="name" placeholder="Name (of type string)" style="overflow:auto"></textarea>
+</div>
+<div class="form-group">
+  <textarea class="form-control" rows="1" id="decimals" placeholder="Decimals (of type uint8)" style="overflow:auto"></textarea>
+</div>
+<div class="form-group">
+  <textarea class="form-control" rows="1" id="rate" placeholder="Rate (of type uint256)" style="overflow:auto"></textarea>
+</div>
+
+<a href="#!" onclick="App.deploy()" button id="button" class="btn btn-primary btn-block">Deploy my crowdsale contract!</a>
+
+<br>
+
+<i><div id="statusText"></div></i>
+
+<hr>
+
+<h4>What kind of contract does the generator deploy?</h4>
+
+<p>The ICO generator deploys an <a href="https://theethereum.wiki/w/index.php/ERC20_Token_Standard">ERC20</a> compliant token contract containing all the required functions of ERC20 tokens.
+    It allows an unlimited number of tokens to be sold, with no expiry date. The SafeMath library is used to ensure no overflow/underflow attacks are possible.</p>
+
+<p>View the token contract <a href="http://github.com">here</a>.</p>
+
+<h4>How much does it cost?</h4>
+
+<p>If you deploy your crowdsale contract to the Ethereum mainnet, it will cost at least a few dollars in mining fees for it to be processed (all transactions in Ethereum cost some ether, which
+is used to pay the miners mining your transaction). It requires around 1,300,000 gas to process the deployed contract here.</p>
+
+<h4>How do I know this is deploying the contract it claims?</h4>
+
+<p>This is an entirely open source project and you can see the javascript used to deploy the contract (via the Web3 library) here (or go to icocompiler.com/app.js for a live version - everything at the end is
+  our code). If you get a tool like Truffle to compile and deploy the token contract we are using (here) you'll see the bytecode and ABI is exactly what is hardcoded in our app.js file.</p>
+
+<hr>
+
+<h4>How do I interact with my deployed contract?</h4>
+
+<p>To execute any of the functions in a contract deployed here right from this webpage, first enter its address below:</p>
+
+<div class="form-group">
+  <textarea class="form-control" rows="1" id="contractAddress" placeholder="Contract address" style="overflow:auto"></textarea>
+</div>
+<a href="#!" onclick="App.callContract()" button id="contractAddressButton" class="btn btn-primary btn-block">Enter</a>
+
+<br>
+
+<i><div id="contractStatus"></div></i>
+
+<p>Below are the functions available for you to execute on a contract address entered above.</p>
+
+<hr>
+
+<!--...-->
+<!--...-->
+<!--...-->
+
+<b>balanceOf() - returns the token balance of an address</b>
+
+<br>
+<br>
+
+<textarea style="width:100%; font-family: 'Courier New'; font-size:12px; border:0;" rows="3" disabled>
+function balanceOf (address _owner) constant returns (uint256) {
+           return balances[_owner]; }
+</textarea>
+
+<div class="form-group">
+  <textarea class="form-control" rows="1" id="balanceOf_owner" placeholder="Address of user" style="overflow:auto"></textarea>
+</div>
+<a href="#!" onclick="App.balanceOf()" button id="balanceOf" class="btn btn-primary btn-block">Execute balanceOf()</a>
+
+<br>
+
+<i><div id="balanceOfStatus"></div></i>
+
+<hr>
+
+<br>
+
+<!--...-->
+<!--...-->
+<!--...-->
+
+<b>transfer() - transfers tokens to an address</b>
+
+<br>
+<br>
+
+<textarea style="width:100%; font-family: 'Courier New'; font-size:12px; border:0;" rows="7" disabled>
+function transfer(address _to, uint256 _value) returns (bool) {
+           require(balances[msg.sender] >= _value && _value > 0);
+           balances[msg.sender] = balances[msg.sender].sub(_value);
+           balances[_to] = balances[_to].add(_value);
+           Transfer(msg.sender, _to, _value);
+           return true; }
+</textarea>
+
+<div class="form-group">
+  <textarea class="form-control" rows="1" id="transfer_to" placeholder="Address of user to transfer tokens to" style="overflow:auto"></textarea>
+</div>
+<div class="form-group">
+  <textarea class="form-control" rows="1" id="transfer_value" placeholder="Amount of tokens to transfer" style="overflow:auto"></textarea>
+</div>
+<a href="#!" onclick="App.transfer()" button id="transfer" class="btn btn-primary btn-block">Execute transfer()</a>
+
+<br>
+
+<i><div id="transferStatus"></div></i>
+
+<hr>
+
+<br>
+
+<!--...-->
+<!--...-->
+<!--...-->
+
+<b>transferFrom() - transfers tokens to an address from an address other than your own (requires approve() to have been called from whoever's
+account you're transferring tokens from)</b>
+
+<br>
+<br>
+
+<textarea style="width:100%; font-family: 'Courier New'; font-size:12px; border:0;" rows="8" disabled>
+function transferFrom(address _from, address _to, uint256 _value) returns (bool) {
+           require (allowed[_from][msg.sender] >= _value && balances[_from] >= _value && _value > 0);
+           balances[_from] = balances[_from].sub(_value);
+           balances[_to] = balances[_to].add(_value);
+           allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+           Transfer(_from, _to, _value);
+           return true; }
+</textarea>
+
+<div class="form-group">
+    <textarea class="form-control" rows="1" id="transferFrom_from" placeholder="Address to transfer from" style="overflow:auto"></textarea>
+</div>
+<div class="form-group">
+    <textarea class="form-control" rows="1" id="transferFrom_to" placeholder="Address to transfer to" style="overflow:auto"></textarea>
+</div>
+<div class="form-group">
+    <textarea class="form-control" rows="1" id="transferFrom_value" placeholder="Value of tokens to transfer" style="overflow:auto"></textarea>
+</div>
+<a href="#!" onclick="App.transferFrom()" button id="transferFrom" class="btn btn-primary btn-block">Execute transferFrom()</a>
+
+<br>
+
+<i><div id="transferFromStatus"></div></i>
+
+<hr>
+
+<br>
+
+<!--...-->
+<!--...-->
+<!--...-->
+
+<b>approve() - approves someone else to spend a certain amount of your tokens</b>
+
+<br>
+<br>
+
+<textarea style="width:100%; font-family: 'Courier New'; font-size:12px; border:0;" rows="5" disabled>
+function approve (address _spender, uint256 _value) returns (bool) {
+           allowed[msg.sender][_spender] = _value;
+           Approval(msg.sender, _spender, _value);
+           return true; }
+</textarea>
+
+<div class="form-group">
+    <textarea class="form-control" rows="1" id="approve_spender" placeholder="Address of account to approve" style="overflow:auto"></textarea>
+</div>
+<div class="form-group">
+    <textarea class="form-control" rows="1" id="approve_value" placeholder="Value to allow" style="overflow:auto"></textarea>
+</div>
+<a href="#!" onclick="App.approve()" button id="approve" class="btn btn-primary btn-block">Execute approve()</a>
+
+<br>
+
+<i><div id="approveStatus"></div></i>
+
+<hr>
+
+<br>
+
+<!--...-->
+<!--...-->
+<!--...-->
+
+<b>allowance() - check how many tokens an account is allowed to spend from another account</b>
+
+<br>
+<br>
+
+<textarea style="width:100%; font-family: 'Courier New'; font-size:12px; border:0;" rows="3" disabled>
+function allowance(address _owner, address _spender) constant returns (uint256) {
+           return allowed[_owner][_spender]; }
+</textarea>
+
+<div class="form-group">
+    <textarea class="form-control" rows="1" id="allowance_owner" placeholder="Address of owner account" style="overflow:auto"></textarea>
+</div>
+<div class="form-group">
+    <textarea class="form-control" rows="1" id="allowance_spender" placeholder="Address of spender account" style="overflow:auto"></textarea>
+</div>
+<a href="#!" onclick="App.allowance()" button id="allowance" class="btn btn-primary btn-block">Execute allowance()</a>
+
+<br>
+
+<i><div id="allowanceStatus"></div></i>
+
+<hr>
+
+<br>
+
+
+</body>
+</html>
