@@ -336,9 +336,9 @@ window.App = {
         if (!error) {
           if (!deployedContract.address) {
             if (isMainNetwork) {
-              statusText.innerHTML = 'Contract deployment in progress - please be patient. If nothing happens for a while check if there\'s any errors in the console (hit F12). Transaction hash: <a href="https://etherscan.io/tx/' + result + '" target="_blank">' + result + '</a>'
+              statusText.innerHTML = 'Contract deployment in progress - please be patient. If nothing happens for a while check if there\'s any errors in the console (hit F12). Transaction hash: <a href="https://etherscan.io/tx/' + result.transactionHash + '" target="_blank">' + result.transactionHash + '</a>'
             } else {
-              statusText.innerHTML = 'Contract deployment in progress - please be patient. If nothing happens for a while check if there\'s any errors in the console (hit F12). Transaction hash: <a href="https://ropsten.etherscan.io/tx/' + result + '" target="_blank">' + result + '</a>'
+              statusText.innerHTML = 'Contract deployment in progress - please be patient. If nothing happens for a while check if there\'s any errors in the console (hit F12). Transaction hash: <a href="https://ropsten.etherscan.io/tx/' + result.transactionHash + '" target="_blank">' + result.transactionHash + '</a>'
             }
           } else {
             statusText.innerHTML = 'Contract deployed at address <b>' + deployedContract.address + '</b> - keep a record of this.'
