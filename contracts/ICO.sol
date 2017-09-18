@@ -38,7 +38,7 @@ contract ICO is IERC20 {
            _totalSupply = _totalSupply.add(tokens);
            balances[msg.sender] = balances[msg.sender].add(tokens);
            owner.transfer(msg.value);
-		   executed = true;
+	   executed = true;
        }
        
        function totalSupply() constant returns (uint256) {
