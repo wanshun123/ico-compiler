@@ -34,11 +34,11 @@ contract ICO is IERC20 {
        
        function createTokens() payable {
            require(msg.value > 0);
-           uint256 tokens = msg.value.mul(RATE);
+           uint256 tokens = msg.value.mul(RATE)/1000000000000000000;
            _totalSupply = _totalSupply.add(tokens);
            balances[msg.sender] = balances[msg.sender].add(tokens);
            owner.transfer(msg.value);
-	   executed = true;
+		   executed = true;
        }
        
        function totalSupply() constant returns (uint256) {
